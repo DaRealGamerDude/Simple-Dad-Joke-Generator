@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dad Joke Generator - Premium Edition</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+            background: linear-gradient(-45deg, #667eea, #764ba2, #f093fb, #f5576c, #4facfe, #00f2fe);
+            background-size: 400% 400%;
+            animation: gradientFlow 20s ease infinite;
+        }
+
+        @keyframes gradientFlow {
+            0% { background-position: 0% 50%; }
+            25% { background-position: 100% 50%; }
+            50% { background-position: 100% 100%; }
+            75% { background-position: 0% 100%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Ambient Background Effects */
+        .ambient-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0.1));
+            filter: blur(1px);
+            animation: float 15s infinite ease-in-out;
+        }
+
+        .orb:nth-child(1) {
+            width: 200px;
+            height: 200px;
+            top: 10%;
+            left: 10%;
+            animation-delay: 0s;
+            background: radial-gradient(circle at 30% 30%, rgba(255, 107, 107, 0.3), rgba(255, 107, 107, 0.05));
+        }
+
+        .orb:nth-child(2) {
+            width: 150px;
+            height: 150px;
+            top: 60%;
+            right: 20%;
+            animation-delay: 5s;
+            background: radial-gradient(circle at 30% 30%, rgba(78, 205, 196, 0.3), rgba(78, 205, 196, 0.05));
+        }
+
+        .orb:nth-child(3) {
+            width: 100px;
+            height: 100px;
+            bottom: 20%;
+            left: 20%;
+            animation-delay: 10s;
+            background: radial-gradient(circle at 30% 30%, rgba(69, 183, 209, 0.3), rgba(69, 183, 209, 0.05));
+        }
+
+        .orb:nth-child(4) {
+            width: 180px;
+            height: 180px;
+            top: 30%;
+            right: 10%;
+            animation-delay: 15s;
+            background: radial-gradient(circle at 30% 30%, rgba(240, 147, 251, 0.3), rgba(240, 147, 251, 0.05));
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            25% { transform: translate(30px, -50px) scale(1.1); }
+            50% { transform: translate(-20px, 20px) scale(0.9); }
+            75% { transform: translate(50px, 30px) scale(1.05); }
+        }
+
+        .particles {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.6);
+            border-radius: 50%;
+            animation: sparkle 8s infinite linear;
+        }
+
+        @keyframes sparkle {
+            0% {
+                transform: translateY(100vh) scale(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+                transform: scale(1);
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100px) scale(0);
+                opacity: 0;
+            }
+        }
+
+        .container {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .joke-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(25px);
+            border-radius: 30px;
+            padding: 50px;
+            max-width: 700px;
+            width: 100%;
+            box-shadow: 
+                0 25px 50px rgba(0, 0, 0, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.3);
+            text-align: center;
+            transform: scale(0.9);
+            animation: slideInUp 1s ease forwards;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .joke-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            animation: shimmer 3s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        @keyframes slideInUp {
+            to {
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        .title {
+            font-size: 3.5rem;
+            font-weight: 700;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1, #f093fb);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            animation: titleGlow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes titleGlow {
+            from { filter: brightness(1); }
+            to { filter: brightness(1.2); }
+        }
+
+        .subtitle {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1.3rem;
+            margin-bottom: 40px;
+            font-weight: 300;
+        }
+
+        .joke-display {
+            min-height: 140px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 30px;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            position: relative;
+        }
+
+        .joke-text {
+            font-size: 1.4rem;
+            line-height: 1.7;
+            color: white;
+            font-weight: 400;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+        }
+
+        .loading {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 1.2rem;
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.8; }
+            50% { opacity: 1; }
+        }
+
+        .button-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .generate-btn {
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1);
+            color: white;
+            border: none;
+            padding: 18px 50px;
+            font-size: 1.3rem;
+            font-weight: 600;
+            border-radius: 60px;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+            position: relative;
+            overflow: hidden;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .generate-btn:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+        }
+
+        .generate-btn:active {
+            transform: translateY(-2px) scale(1.02);
+        }
+
+        .share-container {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+
+        .share-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: white;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .share-btn:hover {
+            transform: translateY(-3px) scale(1.1);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .whatsapp { background: linear-gradient(45deg, #25D366, #128C7E); }
+        .twitter { background: linear-gradient(45deg, #1DA1F2, #0d8bd9); }
+        .instagram { background: linear-gradient(45deg, #E4405F, #833AB4, #F77737); }
+        .linkedin { background: linear-gradient(45deg, #0077B5, #005885); }
+        .copy { background: linear-gradient(45deg, #667eea, #764ba2); }
+
+        .emoji {
+            font-size: 2.2rem;
+            margin: 0 10px;
+            display: inline-block;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-12px); }
+            60% { transform: translateY(-6px); }
+        }
+
+        .stats {
+            margin-top: 30px;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 1rem;
+            font-weight: 300;
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(78, 205, 196, 0.95);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            font-weight: 500;
+            transform: translateX(400px);
+            transition: transform 0.4s ease;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        @media (max-width: 768px) {
+            .title { font-size: 2.8rem; }
+            .joke-card { 
+                padding: 35px 25px; 
+                margin: 15px;
+                border-radius: 25px;
+            }
+            .joke-text { font-size: 1.2rem; }
+            .generate-btn { 
+                padding: 15px 35px; 
+                font-size: 1.1rem;
+            }
+            .share-container { gap: 10px; }
+            .share-btn { 
+                width: 45px; 
+                height: 45px; 
+                font-size: 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container { padding: 15px; }
+            .title { font-size: 2.2rem; }
+            .subtitle { font-size: 1.1rem; }
+            .joke-display { 
+                min-height: 120px; 
+                padding: 20px;
+            }
+            .joke-text { font-size: 1.1rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="ambient-bg">
+        <div class="orb"></div>
+        <div class="orb"></div>
+        <div class="orb"></div>
+        <div class="orb"></div>
+        <div class="particles" id="particles"></div>
+    </div>
+
+    <div class="container">
+        <div class="joke-card">
+            <h1 class="title">Dad Joke Generator</h1>
+            <p class="subtitle">Premium Edition - Ready for some legendary humor?</p>
+            
+            <div class="joke-display" id="jokeDisplay">
+                <p class="joke-text">Click the button below to unleash your first epic dad joke!</p>
+            </div>
+            
+            <div class="button-container">
+                <button class="generate-btn" id="generateBtn" onclick="getNewJoke()">
+                    <span class="emoji">😄</span>
+                    Generate Magic
+                    <span class="emoji">✨</span>
+                </button>
+                
+                <div class="share-container" id="shareContainer" style="opacity: 0; pointer-events: none;">
+                    <button class="share-btn whatsapp" onclick="shareOnWhatsApp()" title="Share on WhatsApp">
+                        📱
+                    </button>
+                    <button class="share-btn twitter" onclick="shareOnTwitter()" title="Share on Twitter">
+                        🐦
+                    </button>
+                    <button class="share-btn instagram" onclick="shareOnInstagram()" title="Share on Instagram">
+                        📸
+                    </button>
+                    <button class="share-btn linkedin" onclick="shareOnLinkedIn()" title="Share on LinkedIn">
+                        💼
+                    </button>
+                    <button class="share-btn copy" onclick="copyToClipboard()" title="Copy to Clipboard">
+                        📋
+                    </button>
+                </div>
+            </div>
+            
+            <div class="stats" id="stats">
+                Legendary jokes generated: <span id="jokeCount">0</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="notification" id="notification"></div>
+
+    <script>
+        let jokeCount = 0;
+        let currentJoke = '';
+
+        // Create floating particles
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            
+            for (let i = 0; i < 50; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 8 + 's';
+                particle.style.animationDuration = (Math.random() * 6 + 4) + 's';
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        async function getNewJoke() {
+            const jokeDisplay = document.getElementById('jokeDisplay');
+            const generateBtn = document.getElementById('generateBtn');
+            const shareContainer = document.getElementById('shareContainer');
+            
+            // Hide share buttons
+            shareContainer.style.opacity = '0';
+            shareContainer.style.pointerEvents = 'none';
+            
+            // Show loading state with enhanced animation
+            jokeDisplay.innerHTML = '<p class="loading">Crafting your perfect dad joke... 🎭</p>';
+            generateBtn.disabled = true;
+            generateBtn.style.opacity = '0.7';
+            generateBtn.style.transform = 'scale(0.95)';
+            
+            try {
+                const response = await fetch('https://v2.jokeapi.dev/joke/Any?blacklistFlags=nsfw,religious,political,racist,sexist,explicit&type=single');
+                
+                if (!response.ok) throw new Error('Failed to fetch joke');
+                
+                const data = await response.json();
+                
+                setTimeout(() => {
+                    let jokeText = '';
+                    if (data.joke) {
+                        jokeText = data.joke;
+                    } else if (data.setup && data.delivery) {
+                        jokeText = `${data.setup}\n\n${data.delivery}`;
+                    } else {
+                        throw new Error('Invalid joke format');
+                    }
+                    
+                    currentJoke = jokeText;
+                    jokeDisplay.innerHTML = `<p class="joke-text">"${jokeText.replace(/\n/g, '<br><br>')}"</p>`;
+                    
+                    // Update stats with animation
+                    jokeCount++;
+                    const countElement = document.getElementById('jokeCount');
+                    countElement.style.transform = 'scale(1.3)';
+                    countElement.style.color = '#4ecdc4';
+                    setTimeout(() => {
+                        countElement.textContent = jokeCount;
+                        countElement.style.transform = 'scale(1)';
+                        countElement.style.color = '';
+                    }, 200);
+                    
+                    // Re-enable button with animation
+                    generateBtn.disabled = false;
+                    generateBtn.style.opacity = '1';
+                    generateBtn.style.transform = 'scale(1)';
+                    
+                    // Show share buttons with stagger animation
+                    shareContainer.style.opacity = '1';
+                    shareContainer.style.pointerEvents = 'auto';
+                    
+                    const shareButtons = shareContainer.querySelectorAll('.share-btn');
+                    shareButtons.forEach((btn, index) => {
+                        btn.style.transform = 'scale(0)';
+                        setTimeout(() => {
+                            btn.style.transform = 'scale(1)';
+                        }, index * 100);
+                    });
+                    
+                    // Card animation
+                    const card = document.querySelector('.joke-card');
+                    card.style.transform = 'scale(1.02)';
+                    setTimeout(() => {
+                        card.style.transform = 'scale(1)';
+                    }, 300);
+                    
+                }, 1200);
+                
+            } catch (error) {
+                console.error('Error fetching joke:', error);
+                
+                const fallbackJokes = [
+                    "I'm afraid for the calendar. Its days are numbered.",
+                    "I used to hate facial hair, but then it grew on me.",
+                    "I don't trust stairs because they're always up to something.",
+                    "What do you call a fake noodle? An impasta.",
+                    "I only know 25 letters of the alphabet. I don't know y.",
+                    "Why don't scientists trust atoms? Because they make up everything.",
+                    "I'm reading a book about anti-gravity. It's impossible to put down!",
+                    "Did you hear about the mathematician who's afraid of negative numbers? He'll stop at nothing to avoid them.",
+                    "Why don't eggs tell jokes? They'd crack each other up.",
+                    "I told my wife she was drawing her eyebrows too high. She looked surprised."
+                ];
+                
+                const randomJoke = fallbackJokes[Math.floor(Math.random() * fallbackJokes.length)];
+                currentJoke = randomJoke;
+                
+                setTimeout(() => {
+                    jokeDisplay.innerHTML = `<p class="joke-text">"${randomJoke}"</p>`;
+                    jokeCount++;
+                    document.getElementById('jokeCount').textContent = jokeCount;
+                    generateBtn.disabled = false;
+                    generateBtn.style.opacity = '1';
+                    generateBtn.style.transform = 'scale(1)';
+                    
+                    shareContainer.style.opacity = '1';
+                    shareContainer.style.pointerEvents = 'auto';
+                }, 1200);
+            }
+        }
+
+        function showNotification(message) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        function shareOnWhatsApp() {
+            const text = encodeURIComponent(`Check out this hilarious dad joke: "${currentJoke}" 😄\n\nGenerated by Dad Joke Generator!`);
+            window.open(`https://wa.me/?text=${text}`, '_blank');
+            showNotification('Opening WhatsApp... 📱');
+        }
+
+        function shareOnTwitter() {
+            const text = encodeURIComponent(`"${currentJoke}" 😄\n\n#DadJokes #Humor`);
+            window.open(`https://twitter.com/intent/tweet?text=${text}`, '_blank');
+            showNotification('Opening Twitter... 🐦');
+        }
+
+        function shareOnInstagram() {
+            copyToClipboard();
+            showNotification('Joke copied! Paste it in your Instagram story 📸');
+        }
+
+        function shareOnLinkedIn() {
+            const text = encodeURIComponent(`Thought I'd share this gem: "${currentJoke}" 😄\n\n#Humor #DadJokes`);
+            window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(window.location.href)}&title=${text}`, '_blank');
+            showNotification('Opening LinkedIn... 💼');
+        }
+
+        async function copyToClipboard() {
+            try {
+                await navigator.clipboard.writeText(`"${currentJoke}" 😄\n\nGenerated by Dad Joke Generator!`);
+                showNotification('Joke copied to clipboard! 📋✨');
+            } catch (err) {
+                // Fallback for older browsers
+                const textArea = document.createElement('textarea');
+                textArea.value = `"${currentJoke}" 😄\n\nGenerated by Dad Joke Generator!`;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                showNotification('Joke copied to clipboard! 📋✨');
+            }
+        }
+
+        // Enhanced mouse interaction
+        document.addEventListener('mousemove', (e) => {
+            const mouseX = e.clientX / window.innerWidth;
+            const mouseY = e.clientY / window.innerHeight;
+            
+            document.body.style.backgroundPosition = `${mouseX * 50}% ${mouseY * 50}%`;
+            
+            // Move orbs slightly with mouse
+            const orbs = document.querySelectorAll('.orb');
+            orbs.forEach((orb, index) => {
+                const speed = (index + 1) * 0.5;
+                orb.style.transform = `translate(${mouseX * speed}px, ${mouseY * speed}px)`;
+            });
+        });
+
+        // Keyboard support
+        document.addEventListener('keydown', (e) => {
+            if (e.code === 'Space' || e.code === 'Enter') {
+                e.preventDefault();
+                if (!document.getElementById('generateBtn').disabled) {
+                    getNewJoke();
+                }
+            }
+            if (e.ctrlKey && e.key === 'c' && currentJoke) {
+                copyToClipboard();
+            }
+        });
+
+        // Initialize
+        window.addEventListener('load', () => {
+            createParticles();
+            setTimeout(getNewJoke, 1500);
+        });
+
+        // Add some sparkle effects on click
+        document.addEventListener('click', (e) => {
+            if (e.target.classList.contains('share-btn') || e.target.classList.contains('generate-btn')) {
+                const sparkles = ['✨', '⭐', '🌟', '💫'];
+                const sparkle = document.createElement('div');
+                sparkle.textContent = sparkles[Math.floor(Math.random() * sparkles.length)];
+                sparkle.style.position = 'fixed';
+                sparkle.style.left = e.clientX + 'px';
+                sparkle.style.top = e.clientY + 'px';
+                sparkle.style.pointerEvents = 'none';
+                sparkle.style.fontSize = '20px';
+                sparkle.style.zIndex = '1000';
+                sparkle.style.animation = 'sparkleEffect 1s ease-out forwards';
+                document.body.appendChild(sparkle);
+                
+                setTimeout(() => sparkle.remove(), 1000);
+            }
+        });
+
+        // Add sparkle effect keyframes
+        const sparkleCSS = `
+            @keyframes sparkleEffect {
+                0% { transform: scale(0) rotate(0deg); opacity: 1; }
+                50% { transform: scale(1.2) rotate(180deg); opacity: 0.8; }
+                100% { transform: scale(0) rotate(360deg); opacity: 0; }
+            }
+        `;
+        const style = document.createElement('style');
+        style.textContent = sparkleCSS;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>
